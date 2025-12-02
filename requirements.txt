@@ -1,7 +1,10 @@
 pandas
 numpy
-xgboost-cpu
-XGBRegressor
+xgboost
+lightgbm
+# XGBRegressor
+tensorflow
+scikit-learn
 google.cloud
 google.oauth2
 scikit-learn
