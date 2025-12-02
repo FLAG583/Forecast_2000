@@ -2,5 +2,8 @@ pandas
 numpy
 xgboost
 lightgbm
+# XGBRegressor
+tensorflow
+scikit-learn
 google.cloud
 google.oauth2
