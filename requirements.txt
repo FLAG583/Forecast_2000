@@ -1,6 +1,7 @@
 pandas
 numpy
 xgboost
+lightgbm
 # XGBRegressor
 tensorflow
 scikit-learn
