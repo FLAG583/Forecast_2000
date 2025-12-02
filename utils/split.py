@@ -3,7 +3,7 @@
 def split_data(df) :
     #Convert Date in Datetime + Set New Date into Index
     df['date'] = pd.to_datetime(df['date'])
-    df.setindex(['date'],inplace = True)
+    df.set_index(['date'],inplace = True)
 
     #Définition of the numbers of days for the train limit
     date_debut = df.index.min()
