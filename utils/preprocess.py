@@ -24,7 +24,8 @@ def processed_features (df : pd.DataFrame):
 
     # CATEGORICAL PIPE
     cat_transformer = OneHotEncoder(drop='if_binary',
-                                    handle_unknown='ignore')
+                                    handle_unknown='ignore',
+                                    sparse_output=False)
     cat_col = make_column_selector(dtype_include=['object','bool'])
 
     # YEAR_PIPE
@@ -35,7 +36,7 @@ def processed_features (df : pd.DataFrame):
 
     # Appliquer un column transformer pour paralléliser les séquences
     preproc_int = make_column_transformer(
-        (num_transformer, ['sales','wm_yr_wk','snap_CA','snap_TX','snap_WI','sell_price']),
+        (num_transformer, ['wm_yr_wk','snap_CA','snap_TX','snap_WI','sell_price']),
         (cat_transformer, cat_col),
         (year_transformer, ['year']),
         remainder='passthrough'
@@ -46,7 +47,6 @@ def processed_features (df : pd.DataFrame):
     preproc_final = make_union(preproc_int,preproc_prefinal)
     return preproc_final
 
-
 def preprocess_final(X_train : pd.DataFrame):
 
     preprocessor = processed_features(X_train)
@@ -54,4 +54,4 @@ def preprocess_final(X_train : pd.DataFrame):
 
     print("✅ X_processed, with shape", X_train_processed.shape)
 
-    return pd.DataFrame(X_train_processed), preprocessor
+    return pd.DataFrame(X_train_processed)
