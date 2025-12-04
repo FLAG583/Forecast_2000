@@ -4,7 +4,7 @@ from tqdm import tqdm
 from google.cloud import storage
 import os
 
-def get_full_data():
+def get_sample_data():
     """Retourne un dataframe des ventes avec les informations
     prix et évènements calendaires
 
@@ -115,5 +115,14 @@ def get_full_data():
 
     # drop des colonnes
     df = df.drop(columns=['id', 'day', 'wm_yr_wk'])
+
+    # Echantillonnage du fichier des ventes
+    print("Echantillonnage...")
+    sub_cat = 'HOBBIES_2'
+    year = 2016
+    store = 'CA_1'
+    df = df[(df['dept_id'] == sub_cat) & (df['store_id'] == store) & (df['year'] == year)]
+
+    print("✅ Execution terminée.")
 
     return df
