@@ -1,4 +1,5 @@
 import numpy as np
+import gc
 import pandas as pd
 from sklearn.pipeline import make_pipeline
 from sklearn.compose import make_column_transformer, make_column_selector
@@ -47,8 +48,11 @@ def processed_features (df : pd.DataFrame):
 
 def preprocess_final(X_train, X_val, X_test):
     preprocessor = processed_features(X_train)
+    print("✅fit transform commence")
     X_train_processed = preprocessor.fit_transform(X_train)
     del X_train
+    gc.collect()
+    print("✅fit transform Xtrain terminé")
     X_val_processed   = preprocessor.transform(X_val)
     del X_val
     X_test_processed  = preprocessor.transform(X_test)
