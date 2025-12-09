@@ -3,6 +3,7 @@ from keras import Model, Sequential, layers, regularizers, optimizers
 from keras.callbacks import EarlyStopping
 from keras.layers import LSTM,Dense,Input
 from sklearn.metrics import mean_squared_error
+from forecast_2000.models.save_model_local import save_model_joblib
 
 """
     Build, compile, train and return the model + training history.
@@ -47,5 +48,8 @@ def model_LSTM(X_train_processed, X_val_processed,X_test_processed, y_train, y_v
     # Performance
     rmse = mean_squared_error(y_test, y_pred)
     print(f"RMSE sur le test set : {rmse:.4f}")
+
+    # Sauvegarde du modèle
+    save_model_joblib(LSTM_model)
 
     return LSTM_model, history, y_pred
