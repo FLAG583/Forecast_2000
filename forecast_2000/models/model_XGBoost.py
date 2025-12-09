@@ -61,7 +61,7 @@ def train_xgboost_model(X_train, X_val, y_train, y_val) -> XGBRegressor:
 
     return XGB_model
 
-def evaluate_and_predict(model: XGBRegressor, X_test, y_test) -> Tuple[XGBRegressor, np.ndarray]:
+def evaluate_and_predict_xgboost(model: XGBRegressor, X_test, y_test) -> Tuple[XGBRegressor, np.ndarray]:
     """
     Évalue le modèle sur le jeu de test et retourne les prédictions.
     """
@@ -73,4 +73,4 @@ def evaluate_and_predict(model: XGBRegressor, X_test, y_test) -> Tuple[XGBRegres
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     print(f"✅ RMSE sur le jeu de test : {rmse:.4f}")
 
-    return model, y_pred
+    return y_pred
