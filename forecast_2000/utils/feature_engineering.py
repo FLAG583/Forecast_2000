@@ -26,6 +26,9 @@ def features_engineering(df):
         pd.DataFrame: Le DataFrame d'entrée enrichi avec les nouvelles
                       caractéristiques.
     """
+
+    df = df.drop(columns=['event_name_2', 'event_type_1', 'event_type_2', 'dept_id'])
+
     # Lags
     lags = [28, 35, 42, 49, 56, 63, 70]
     for lag in tqdm(lags, desc="Création des Lags"):
@@ -52,11 +55,17 @@ def features_engineering(df):
     # Si > 1 : Le produit est plus cher que d'habitude.
     # Si < 1 : Le produit est en "promo".
     df['price_ratio'] = df['sell_price'] / df['item_avg_price']
-
-    # Nettoyage
     df['price_ratio'] = df['price_ratio'].fillna(1.0)
 
+    # Ratio prix vs Catégorie
+    df['cat_avg_price'] = df.groupby(['store_id', 'cat_id', 'wm_yr_wk'])['sell_price'].transform('mean')
+    df['price_ratio_cat'] = df['sell_price'] / df['cat_avg_price']
+    df['price_ratio_cat'] = df['price_ratio_cat'].fillna(1.0)
 
+    # Feature qui regarde si le prix a été changé récemment
+    df['price_lag_28'] = df.groupby('item_id')['sell_price'].transform(lambda x: x.shift(28))
+    df['price_momentum'] = df['sell_price'] / df['price_lag_28']
+    df['price_momentum'] = df['price_momentum'].fillna(1.0)
 
     print("Feature engineering terminé.")
 
