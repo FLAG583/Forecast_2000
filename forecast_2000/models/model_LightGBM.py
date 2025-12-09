@@ -7,7 +7,7 @@ import time
 from forecast_2000.models.save_model_local import save_model_joblib
 
 
-def train_model_LightGBM(X_train: pd.DataFrame, X_val: pd.DataFrame, y_train: pd.Series, y_val: pd.Series) -> lgb.LGBMRegressor:
+def train_model_LightGBM(X_train: pd.DataFrame, y_train: pd.Series, X_val: pd.DataFrame, y_val: pd.Series) -> lgb.LGBMRegressor:
     """
     Entraîne un modèle LightGBM et le retourne.
 
@@ -24,15 +24,17 @@ def train_model_LightGBM(X_train: pd.DataFrame, X_val: pd.DataFrame, y_train: pd
         Le modèle LGBMRegressor entraîné.
     """
     mono_constraints = [0] * len(X_train.columns)
+    price_features = ['sell_price', 'price_ratio_item', 'price_ratio_cat', 'price_momentum']
     # Trouver l'index de price_ratio
-    if 'price_ratio' in X_train.columns:
-        price_idx = X_train.columns.get_loc('price_ratio')
-        mono_constraints[price_idx] = -1
+    for feature in price_features:
+        if feature in X_train.columns:
+            price_idx = X_train.columns.get_loc(feature)
+            mono_constraints[price_idx] = -1
 
     print("Configuration du modèle LightGBM...")
     lightGBM_model = lgb.LGBMRegressor(
             n_estimators=3000,
-            learning_rate=0.2,
+            learning_rate=0.1,
             max_depth=-1,
             objective='tweedie',
             tweedie_variance_power=1.1,
@@ -52,11 +54,14 @@ def train_model_LightGBM(X_train: pd.DataFrame, X_val: pd.DataFrame, y_train: pd
     # Enregistrement du temps de départ
     start_time = time.time()
 
+    y_train_clean = y_train.values.ravel()
+    y_val_clean = y_val.values.ravel()
+
     print("Entraînement du modèle LightGBM...")
     lightGBM_model.fit(
             X_train,
-            y_train,
-            eval_set=[(X_train, y_train), (X_val, y_val)],
+            y_train_clean,
+            eval_set=[(X_train, y_train_clean), (X_val, y_val_clean)],
             #eval_metric='rmse',
             #categorical_feature=categorical_cols,
             # Le paramètre 'categorical_feature' est inutile car LightGBM
